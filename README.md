@@ -16,4 +16,4 @@ The code is written by Qing Fang and Zheng-Yu Zhao using Microsoft Visual Studio
 
 ## Data Format
 
-*.seg :  face label array. The number records which part the face belongs.
+*.seg :  the parts id each triangle belongs to.
