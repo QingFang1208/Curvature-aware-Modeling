@@ -174,9 +174,23 @@ void InteractiveViewerWidget::mousePressEvent(QMouseEvent *_event)
 	
 	pick_point(_event->x(), _event->y());
 
-	if (edit_mode_ == SEG_DRAW)
+	if (edit_mode_ == SEG_DRAW && mouse_mode == Qt::LeftButton)
 	{
 		pick_vertex(_event->x(), _event->y());
+		if (pickVertexValid())
+		{
+			end_point = mesh.vertex_handle(lastestVertex);
+			if (path_.size() != 0)
+			{
+				dijkstra_->ComputePath(start_point, end_point);
+				cur_path_ = dijkstra_->return_path();
+			}
+			else
+			{
+				init_point = end_point;
+				start_point = end_point;
+			}
+		}
 	}
 	else if (edit_mode_ == FACE_SELECT)
 	{
@@ -393,7 +407,7 @@ void InteractiveViewerWidget::mouseReleaseEvent(QMouseEvent *_event)
 	{
 		select_start_ = select_end_;
 	}
-	else if (edit_mode_ == SEG_DRAW)
+	else if (edit_mode_ == SEG_DRAW && mouse_mode == Qt::LeftButton)
 	{
 		if (pickVertexValid())
 		{
@@ -780,6 +794,7 @@ void InteractiveViewerWidget::draw_scene(int drawmode)
 	switch (edit_mode_)
 	{
 	case TRANS:
+		draw_seg_lines();
 	case SEG_PICK:
 	case BOUND_PICK:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
